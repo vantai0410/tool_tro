@@ -33,15 +33,15 @@
       }
 
       .btn-primary {
-        @apply bg-primary hover:bg-primary-dark active:scale-95 transition-all duration-150 text-white font-bold py-5 px-8 rounded-xl shadow-md min-h-[70px] text-xl;
+        @apply bg-primary hover:bg-primary-dark active:scale-95 transition-all duration-150 text-white font-black py-6 px-8 rounded-2xl shadow-lg min-h-[80px] text-2xl;
       }
 
       .btn-secondary {
-        @apply bg-green-500 hover:bg-green-600 active:scale-95 transition-all duration-150 text-white font-bold py-5 px-8 rounded-xl shadow-md min-h-[70px] text-xl;
+        @apply bg-green-500 hover:bg-green-600 active:scale-95 transition-all duration-150 text-white font-black py-6 px-8 rounded-2xl shadow-lg min-h-[80px] text-2xl;
       }
 
       .input-field {
-        @apply w-full px-6 py-5 text-xl border-3 border-gray-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[70px] transition-all;
+        @apply w-full px-6 py-6 text-2xl border-3 border-gray-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[80px] transition-all font-semibold;
       }
 
       .input-field:focus {
@@ -49,8 +49,16 @@
         box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
       }
 
+      select.input-field {
+        @apply py-5;
+      }
+
+      textarea.input-field {
+        @apply py-4 min-h-[100px];
+      }
+
       .label-text {
-        @apply block text-lg font-bold text-gray-700 mb-3;
+        @apply block text-xl font-bold text-gray-800 mb-3;
       }
 
       .card {
@@ -148,7 +156,7 @@
               type="text"
               id="tenantName"
               class="input-field"
-              placeholder="Nhập tên khách"
+              placeholder="Nhập tên phòng"
               required
               autocomplete="off"
             />
@@ -498,7 +506,7 @@
         // Generate invoice HTML
         const invoiceHTML = `
                 <div class="mb-6 text-center bg-gray-50 p-5 rounded-xl">
-                    <p class="text-2xl font-bold text-gray-900">Khách: ${tenantName}</p>
+                    <p class="text-2xl font-bold text-gray-900">Phòng: ${tenantName}</p>
                     <p class="text-lg text-primary font-semibold mt-1">Tháng ${billingMonth}</p>
                     <p class="text-lg text-gray-600 mt-2">Ngày: ${new Date().toLocaleDateString(
                       "vi-VN"
@@ -630,7 +638,7 @@
         let message = `🧾 HÓA ĐƠN TIỀN PHÒNG\n`;
         message += `Tháng ${inv.billingMonth}\n`;
         message += `------------------------\n\n`;
-        message += `👤 Khách: ${inv.tenantName}\n`;
+        message += `👤 Phòng: ${inv.tenantName}\n`;
         message += `📅 Ngày: ${inv.date}\n\n`;
 
         message += `📋 CHI TIẾT\n`;
@@ -665,9 +673,26 @@
           message += `\n\n📝 Ghi chú:\n${inv.notes}`;
         }
 
-        // Copy to clipboard first
+        // Try Web Share API first (works on mobile - shows native share dialog)
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "Hóa đơn tiền phòng",
+              text: message,
+            });
+            return; // Success - exit function
+          } catch (err) {
+            // User cancelled or share failed - continue to fallback
+            if (err.name === "AbortError") {
+              return; // User cancelled, don't show alert
+            }
+          }
+        }
+
+        // Fallback: Copy to clipboard and notify user
         try {
           await navigator.clipboard.writeText(message);
+          alert("✅ Đã copy hóa đơn!\n\nMở Zalo và paste (dán) để gửi.");
         } catch (err) {
           // Fallback for older browsers
           const textarea = document.createElement("textarea");
@@ -676,13 +701,16 @@
           textarea.style.opacity = "0";
           document.body.appendChild(textarea);
           textarea.select();
-          document.execCommand("copy");
+          try {
+            document.execCommand("copy");
+            alert("✅ Đã copy hóa đơn!\n\nMở Zalo và paste (dán) để gửi.");
+          } catch (e) {
+            alert(
+              "❌ Không thể copy tự động.\n\nVui lòng copy nội dung hóa đơn thủ công."
+            );
+          }
           document.body.removeChild(textarea);
         }
-
-        // Open Zalo with pre-filled message
-        const zaloUrl = `https://zalo.me/?text=${encodeURIComponent(message)}`;
-        window.open(zaloUrl, "_blank");
       }
 
       // Modal functions
@@ -696,6 +724,10 @@
 
       function openInvoice() {
         document.getElementById("invoiceModal").classList.remove("hidden");
+        // Auto scroll to top to see the modal
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 100);
       }
 
       function closeInvoice() {

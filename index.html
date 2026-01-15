@@ -143,7 +143,7 @@
         <form id="rentalForm" onsubmit="calculateTotal(event)">
           <!-- Tenant Name -->
           <div class="mb-6">
-            <label class="label-text">Tên Khách Thuê</label>
+            <label class="label-text">Phòng</label>
             <input
               type="text"
               id="tenantName"
@@ -152,6 +152,26 @@
               required
               autocomplete="off"
             />
+          </div>
+
+          <!-- Month Selection -->
+          <div class="mb-6">
+            <label class="label-text">Tháng Tính Tiền</label>
+            <select id="billingMonth" class="input-field" required>
+              <option value="">-- Chọn tháng --</option>
+              <option value="1">Tháng 1</option>
+              <option value="2">Tháng 2</option>
+              <option value="3">Tháng 3</option>
+              <option value="4">Tháng 4</option>
+              <option value="5">Tháng 5</option>
+              <option value="6">Tháng 6</option>
+              <option value="7">Tháng 7</option>
+              <option value="8">Tháng 8</option>
+              <option value="9">Tháng 9</option>
+              <option value="10">Tháng 10</option>
+              <option value="11">Tháng 11</option>
+              <option value="12">Tháng 12</option>
+            </select>
           </div>
 
           <!-- Room Price -->
@@ -259,19 +279,44 @@
           </div>
 
           <!-- Other Fees -->
+          <div class="mb-6">
+            <label class="label-text">Chi Phí Khác</label>
+            <div class="grid-2">
+              <div>
+                <input
+                  type="number"
+                  id="otherFees"
+                  class="input-field"
+                  placeholder="Số tiền (VNĐ)"
+                  value="0"
+                  min="0"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  autocomplete="off"
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  id="otherFeesDesc"
+                  class="input-field"
+                  placeholder="Mô tả (VD: Wifi, rác...)"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
           <div class="mb-8">
-            <label class="label-text">Chi Phí Khác (VNĐ)</label>
-            <input
-              type="number"
-              id="otherFees"
+            <label class="label-text">Ghi Chú (Tùy chọn)</label>
+            <textarea
+              id="notes"
               class="input-field"
-              placeholder="0"
-              value="0"
-              min="0"
-              inputmode="numeric"
-              pattern="[0-9]*"
+              placeholder="Nhập ghi chú nếu có..."
+              rows="3"
               autocomplete="off"
-            />
+            ></textarea>
           </div>
 
           <!-- Action Buttons -->
@@ -347,7 +392,7 @@
 
           <div class="mt-8 space-y-4">
             <button onclick="sendToZalo()" class="btn-secondary w-full">
-              💬 Gửi qua Zalo
+              � Gửi qua Zalo
             </button>
             <button
               onclick="closeInvoice()"
@@ -367,6 +412,10 @@
         const waterPrice = localStorage.getItem("waterPrice") || "20000";
         document.getElementById("electricPrice").value = electricPrice;
         document.getElementById("waterPrice").value = waterPrice;
+
+        // Set current month as default
+        const currentMonth = new Date().getMonth() + 1; // 0-11 -> 1-12
+        document.getElementById("billingMonth").value = currentMonth;
       }
 
       // Save settings to localStorage
@@ -418,6 +467,7 @@
         event.preventDefault();
 
         const tenantName = document.getElementById("tenantName").value;
+        const billingMonth = document.getElementById("billingMonth").value;
         const roomPrice =
           parseFloat(document.getElementById("roomPrice").value) || 0;
         const electricOld =
@@ -430,6 +480,8 @@
           parseFloat(document.getElementById("waterNew").value) || 0;
         const otherFees =
           parseFloat(document.getElementById("otherFees").value) || 0;
+        const otherFeesDesc = document.getElementById("otherFeesDesc").value;
+        const notes = document.getElementById("notes").value;
 
         const electricPrice =
           parseFloat(localStorage.getItem("electricPrice")) || 3500;
@@ -447,6 +499,7 @@
         const invoiceHTML = `
                 <div class="mb-6 text-center bg-gray-50 p-5 rounded-xl">
                     <p class="text-2xl font-bold text-gray-900">Khách: ${tenantName}</p>
+                    <p class="text-lg text-primary font-semibold mt-1">Tháng ${billingMonth}</p>
                     <p class="text-lg text-gray-600 mt-2">Ngày: ${new Date().toLocaleDateString(
                       "vi-VN"
                     )}</p>
@@ -508,7 +561,9 @@
                           otherFees > 0
                             ? `
                         <tr>
-                            <td class="font-semibold text-base">Chi phí khác</td>
+                            <td class="font-semibold text-base">Chi phí khác${
+                              otherFeesDesc ? ` (${otherFeesDesc})` : ""
+                            }</td>
                             <td class="text-right text-base">-</td>
                             <td class="text-right text-base">-</td>
                             <td class="text-right font-bold text-primary text-lg">${formatCurrency(
@@ -528,6 +583,16 @@
                         </tr>
                     </tfoot>
                 </table>
+                ${
+                  notes
+                    ? `
+                <div class="mt-6 p-4 bg-yellow-50 rounded-xl border-l-4 border-yellow-400">
+                    <p class="text-sm font-semibold text-yellow-800 mb-1">📝 Ghi chú:</p>
+                    <p class="text-base text-gray-700 whitespace-pre-wrap">${notes}</p>
+                </div>
+                `
+                    : ""
+                }
             `;
 
         document.getElementById("invoiceContent").innerHTML = invoiceHTML;
@@ -535,6 +600,7 @@
         // Store invoice data for Zalo
         window.currentInvoice = {
           tenantName,
+          billingMonth,
           date: new Date().toLocaleDateString("vi-VN"),
           roomPrice,
           electricOld,
@@ -548,6 +614,8 @@
           waterPrice,
           waterCost,
           otherFees,
+          otherFeesDesc,
+          notes,
           total,
         };
 
@@ -560,38 +628,41 @@
         if (!inv) return;
 
         let message = `🧾 HÓA ĐƠN TIỀN PHÒNG\n`;
-        message += `━━━━━━━━━━━━━━━━━━━━\n`;
+        message += `Tháng ${inv.billingMonth}\n`;
+        message += `------------------------\n\n`;
         message += `👤 Khách: ${inv.tenantName}\n`;
         message += `📅 Ngày: ${inv.date}\n\n`;
-        message += `📋 CHI TIẾT:\n`;
-        message += `━━━━━━━━━━━━━━━━━━━━\n`;
-        message += `🏠 Tiền phòng: ${formatCurrency(inv.roomPrice)}\n\n`;
-        message += `⚡ Điện: ${inv.electricUsed.toFixed(1)} kWh\n`;
-        message += `   Chỉ số: ${inv.electricOld} → ${inv.electricNew}\n`;
-        message += `   Đơn giá: ${formatCurrency(inv.electricPrice)}/kWh\n`;
-        message += `   Thành tiền: ${formatCurrency(inv.electricCost)}\n\n`;
-        message += `💧 Nước: ${inv.waterUsed.toFixed(1)} m³\n`;
-        message += `   Chỉ số: ${inv.waterOld} → ${inv.waterNew}\n`;
-        message += `   Đơn giá: ${formatCurrency(inv.waterPrice)}/m³\n`;
-        message += `   Thành tiền: ${formatCurrency(inv.waterCost)}\n\n`;
-        if (inv.otherFees > 0) {
-          message += `📌 Chi phí khác: ${formatCurrency(inv.otherFees)}\n\n`;
-        }
-        message += `━━━━━━━━━━━━━━━━━━━━\n`;
-        message += `💰 TỔNG CỘNG: ${formatCurrency(inv.total)}\n`;
-        message += `━━━━━━━━━━━━━━━━━━━━`;
 
-        // Try Web Share API first (works on mobile)
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: "Hóa đơn tiền phòng",
-              text: message,
-            });
-            return;
-          } catch (err) {
-            // User cancelled or error, fallback to clipboard
-          }
+        message += `📋 CHI TIẾT\n`;
+        message += `------------------------\n\n`;
+
+        message += `🏠 Tiền phòng\n`;
+        message += `${formatCurrency(inv.roomPrice)}\n\n`;
+
+        message += `⚡ Điện: ${inv.electricUsed.toFixed(1)} kWh\n`;
+        message += `Chỉ số: ${inv.electricOld} → ${inv.electricNew}\n`;
+        message += `Đơn giá: ${formatCurrency(inv.electricPrice)}/kWh\n`;
+        message += `Thành tiền: ${formatCurrency(inv.electricCost)}\n\n`;
+
+        message += `💧 Nước: ${inv.waterUsed.toFixed(1)} m³\n`;
+        message += `Chỉ số: ${inv.waterOld} → ${inv.waterNew}\n`;
+        message += `Đơn giá: ${formatCurrency(inv.waterPrice)}/m³\n`;
+        message += `Thành tiền: ${formatCurrency(inv.waterCost)}\n\n`;
+
+        if (inv.otherFees > 0) {
+          message += `📌 Chi phí khác${
+            inv.otherFeesDesc ? ` (${inv.otherFeesDesc})` : ""
+          }\n`;
+          message += `${formatCurrency(inv.otherFees)}\n\n`;
+        }
+
+        message += `------------------------\n`;
+        message += `💰 TỔNG CỘNG\n`;
+        message += `${formatCurrency(inv.total)}\n`;
+        message += `------------------------`;
+
+        if (inv.notes) {
+          message += `\n\n📝 Ghi chú:\n${inv.notes}`;
         }
 
         // Fallback: Copy to clipboard

@@ -665,12 +665,9 @@
           message += `\n\n📝 Ghi chú:\n${inv.notes}`;
         }
 
-        // Fallback: Copy to clipboard
+        // Copy to clipboard first
         try {
           await navigator.clipboard.writeText(message);
-          alert(
-            "✅ Đã copy hóa đơn vào clipboard!\n\nMở Zalo và paste (dán) vào để gửi."
-          );
         } catch (err) {
           // Fallback for older browsers
           const textarea = document.createElement("textarea");
@@ -679,18 +676,13 @@
           textarea.style.opacity = "0";
           document.body.appendChild(textarea);
           textarea.select();
-          try {
-            document.execCommand("copy");
-            alert(
-              "✅ Đã copy hóa đơn vào clipboard!\n\nMở Zalo và paste (dán) vào để gửi."
-            );
-          } catch (e) {
-            alert(
-              "❌ Không thể copy tự động. Vui lòng copy nội dung hóa đơn thủ công."
-            );
-          }
+          document.execCommand("copy");
           document.body.removeChild(textarea);
         }
+
+        // Open Zalo with pre-filled message
+        const zaloUrl = `https://zalo.me/?text=${encodeURIComponent(message)}`;
+        window.open(zaloUrl, "_blank");
       }
 
       // Modal functions

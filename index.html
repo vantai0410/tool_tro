@@ -41,7 +41,7 @@
       }
 
       .input-field {
-        @apply w-full px-6 py-6 text-2xl border-3 border-gray-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[80px] transition-all font-semibold;
+        @apply w-full px-7 py-7 text-2xl border-3 border-gray-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[90px] transition-all font-semibold;
       }
 
       .input-field:focus {
@@ -50,11 +50,11 @@
       }
 
       select.input-field {
-        @apply py-5;
+        @apply py-6 min-h-[90px];
       }
 
       textarea.input-field {
-        @apply py-4 min-h-[100px];
+        @apply py-5 min-h-[120px];
       }
 
       .label-text {
@@ -724,9 +724,12 @@
 
       function openInvoice() {
         document.getElementById("invoiceModal").classList.remove("hidden");
-        // Auto scroll to top to see the modal
+        // Auto scroll to bottom to see the modal
         setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+          });
         }, 100);
       }
 

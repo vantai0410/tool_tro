@@ -1,321 +1,455 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ứng dụng tính tiền phòng trọ - Đơn giản, nhanh chóng">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ứng dụng tính tiền phòng trọ - Đơn giản, nhanh chóng"
+    />
     <title>Tính Tiền Phòng Trọ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        'primary-dark': '#2563eb',
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3b82f6",
+              "primary-dark": "#2563eb",
+            },
+          },
+        },
+      };
     </script>
     <style>
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
 
-        .btn-primary {
-            @apply bg-primary hover:bg-primary-dark active:scale-95 transition-all duration-150 text-white font-bold py-5 px-8 rounded-xl shadow-md min-h-[70px] text-xl;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
 
-        .btn-secondary {
-            @apply bg-green-500 hover:bg-green-600 active:scale-95 transition-all duration-150 text-white font-bold py-5 px-8 rounded-xl shadow-md min-h-[70px] text-xl;
-        }
+      .btn-primary {
+        @apply bg-primary hover:bg-primary-dark active:scale-95 transition-all duration-150 text-white font-bold py-5 px-8 rounded-xl shadow-md min-h-[70px] text-xl;
+      }
 
-        .input-field {
-            @apply w-full px-6 py-5 text-xl border-3 border-gray-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[70px] transition-all;
-        }
-        
-        .input-field:focus {
-            transform: scale(1.02);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-        }
+      .btn-secondary {
+        @apply bg-green-500 hover:bg-green-600 active:scale-95 transition-all duration-150 text-white font-bold py-5 px-8 rounded-xl shadow-md min-h-[70px] text-xl;
+      }
 
-        .label-text {
-            @apply block text-lg font-bold text-gray-700 mb-3;
+      .input-field {
+        @apply w-full px-6 py-5 text-xl border-3 border-gray-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[70px] transition-all;
+      }
+
+      .input-field:focus {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+      }
+
+      .label-text {
+        @apply block text-lg font-bold text-gray-700 mb-3;
+      }
+
+      .card {
+        @apply bg-white rounded-2xl shadow-lg p-5 mb-4 border border-gray-100;
+      }
+
+      .invoice-table {
+        @apply w-full border-collapse;
+      }
+
+      .invoice-table th,
+      .invoice-table td {
+        @apply px-4 py-4 text-left border-b border-gray-200;
+      }
+
+      .invoice-table th {
+        @apply font-bold text-gray-800 bg-gray-50;
+      }
+
+      .invoice-table td {
+        @apply text-gray-900;
+      }
+
+      .modal {
+        @apply fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50;
+      }
+
+      .modal-content {
+        @apply bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto;
+      }
+
+      .grid-2 {
+        @apply grid grid-cols-2 gap-3;
+      }
+
+      /* Mobile optimizations */
+      @media (max-width: 640px) {
+        .grid-2 {
+          @apply gap-3;
         }
 
         .card {
-            @apply bg-white rounded-2xl shadow-lg p-5 mb-4 border border-gray-100;
-        }
-
-        .invoice-table {
-            @apply w-full border-collapse;
+          @apply p-4;
         }
 
         .invoice-table th,
         .invoice-table td {
-            @apply px-4 py-4 text-left border-b border-gray-200;
-        }
-
-        .invoice-table th {
-            @apply font-bold text-gray-800 bg-gray-50;
-        }
-
-        .invoice-table td {
-            @apply text-gray-900;
-        }
-
-        .modal {
-            @apply fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50;
+          @apply px-2 py-2 text-sm;
         }
 
         .modal-content {
-            @apply bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto;
+          @apply max-h-[85vh];
         }
+      }
 
-        .grid-2 {
-            @apply grid grid-cols-2 gap-3;
-        }
+      /* Improve number input on mobile */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
 
-        /* Mobile optimizations */
-        @media (max-width: 640px) {
-            .grid-2 {
-                @apply gap-3;
-            }
-            
-            .card {
-                @apply p-4;
-            }
-            
-            .invoice-table th,
-            .invoice-table td {
-                @apply px-2 py-2 text-sm;
-            }
-            
-            .modal-content {
-                @apply max-h-[85vh];
-            }
-        }
-
-        /* Improve number input on mobile */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
     </style>
-</head>
-<body class="bg-gray-50 min-h-screen">
+  </head>
+  <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-6 max-w-4xl">
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-3">💰 Tính Tiền Phòng Trọ</h1>
-            <p class="text-xl text-gray-600">Đơn giản - Nhanh chóng - Chính xác</p>
-        </header>
+      <!-- Header -->
+      <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-3">
+          💰 Tính Tiền Phòng Trọ
+        </h1>
+        <p class="text-xl text-gray-600">Đơn giản - Nhanh chóng - Chính xác</p>
+      </header>
 
-        <!-- Settings Button -->
-        <div class="mb-6">
-            <button onclick="openSettings()" class="w-full bg-gray-200 hover:bg-gray-300 active:scale-95 transition-all duration-150 text-gray-800 font-bold py-5 px-8 rounded-xl min-h-[70px] shadow-sm text-xl">
-                ⚙️ Cài Đặt Đơn Giá
+      <!-- Settings Button -->
+      <div class="mb-6">
+        <button
+          onclick="openSettings()"
+          class="w-full bg-gray-200 hover:bg-gray-300 active:scale-95 transition-all duration-150 text-gray-800 font-bold py-5 px-8 rounded-xl min-h-[70px] shadow-sm text-xl"
+        >
+          ⚙️ Cài Đặt Đơn Giá
+        </button>
+      </div>
+
+      <!-- Main Form -->
+      <div class="card">
+        <form id="rentalForm" onsubmit="calculateTotal(event)">
+          <!-- Tenant Name -->
+          <div class="mb-6">
+            <label class="label-text">Tên Khách Thuê</label>
+            <input
+              type="text"
+              id="tenantName"
+              class="input-field"
+              placeholder="Nhập tên khách"
+              required
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Room Price -->
+          <div class="mb-6">
+            <label class="label-text">Tiền Phòng (VNĐ)</label>
+            <input
+              type="number"
+              id="roomPrice"
+              class="input-field"
+              placeholder="0"
+              required
+              min="0"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Electricity -->
+          <div class="mb-6">
+            <label class="label-text">Số Điện (kWh)</label>
+            <div class="grid-2">
+              <div>
+                <label class="text-sm text-gray-600 mb-1 block">Số cũ</label>
+                <input
+                  type="number"
+                  id="electricOld"
+                  class="input-field"
+                  placeholder="0"
+                  required
+                  min="0"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="calculateElectric()"
+                  autocomplete="off"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-600 mb-1 block">Số mới</label>
+                <input
+                  type="number"
+                  id="electricNew"
+                  class="input-field"
+                  placeholder="0"
+                  required
+                  min="0"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="calculateElectric()"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <p class="text-lg text-gray-600 mt-3 font-semibold">
+              Tiêu thụ:
+              <span id="electricUsed" class="font-bold text-primary text-xl"
+                >0</span
+              >
+              kWh
+            </p>
+          </div>
+
+          <!-- Water -->
+          <div class="mb-6">
+            <label class="label-text">Số Nước (m³)</label>
+            <div class="grid-2">
+              <div>
+                <label class="text-sm text-gray-600 mb-1 block">Số cũ</label>
+                <input
+                  type="number"
+                  id="waterOld"
+                  class="input-field"
+                  placeholder="0"
+                  required
+                  min="0"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="calculateWater()"
+                  autocomplete="off"
+                />
+              </div>
+              <div>
+                <label class="text-sm text-gray-600 mb-1 block">Số mới</label>
+                <input
+                  type="number"
+                  id="waterNew"
+                  class="input-field"
+                  placeholder="0"
+                  required
+                  min="0"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="calculateWater()"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <p class="text-lg text-gray-600 mt-3 font-semibold">
+              Tiêu thụ:
+              <span id="waterUsed" class="font-bold text-primary text-xl"
+                >0</span
+              >
+              m³
+            </p>
+          </div>
+
+          <!-- Other Fees -->
+          <div class="mb-8">
+            <label class="label-text">Chi Phí Khác (VNĐ)</label>
+            <input
+              type="number"
+              id="otherFees"
+              class="input-field"
+              placeholder="0"
+              value="0"
+              min="0"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="space-y-3">
+            <button type="submit" class="btn-primary w-full">
+              📊 Xuất Hóa Đơn
             </button>
-        </div>
-
-        <!-- Main Form -->
-        <div class="card">
-            <form id="rentalForm" onsubmit="calculateTotal(event)">
-                <!-- Tenant Name -->
-                <div class="mb-6">
-                    <label class="label-text">Tên Khách Thuê</label>
-                    <input type="text" id="tenantName" class="input-field" placeholder="Nhập tên khách" required autocomplete="off">
-                </div>
-
-                <!-- Room Price -->
-                <div class="mb-6">
-                    <label class="label-text">Tiền Phòng (VNĐ)</label>
-                    <input type="number" id="roomPrice" class="input-field" placeholder="0" required min="0" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                </div>
-
-                <!-- Electricity -->
-                <div class="mb-6">
-                    <label class="label-text">Số Điện (kWh)</label>
-                    <div class="grid-2">
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Số cũ</label>
-                            <input type="number" id="electricOld" class="input-field" placeholder="0" required min="0" inputmode="numeric" pattern="[0-9]*" oninput="calculateElectric()" autocomplete="off">
-                        </div>
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Số mới</label>
-                            <input type="number" id="electricNew" class="input-field" placeholder="0" required min="0" inputmode="numeric" pattern="[0-9]*" oninput="calculateElectric()" autocomplete="off">
-                        </div>
-                    </div>
-                    <p class="text-lg text-gray-600 mt-3 font-semibold">Tiêu thụ: <span id="electricUsed" class="font-bold text-primary text-xl">0</span> kWh</p>
-                </div>
-
-                <!-- Water -->
-                <div class="mb-6">
-                    <label class="label-text">Số Nước (m³)</label>
-                    <div class="grid-2">
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Số cũ</label>
-                            <input type="number" id="waterOld" class="input-field" placeholder="0" required min="0" inputmode="numeric" pattern="[0-9]*" oninput="calculateWater()" autocomplete="off">
-                        </div>
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Số mới</label>
-                            <input type="number" id="waterNew" class="input-field" placeholder="0" required min="0" inputmode="numeric" pattern="[0-9]*" oninput="calculateWater()" autocomplete="off">
-                        </div>
-                    </div>
-                    <p class="text-lg text-gray-600 mt-3 font-semibold">Tiêu thụ: <span id="waterUsed" class="font-bold text-primary text-xl">0</span> m³</p>
-                </div>
-
-                <!-- Other Fees -->
-                <div class="mb-8">
-                    <label class="label-text">Chi Phí Khác (VNĐ)</label>
-                    <input type="number" id="otherFees" class="input-field" placeholder="0" value="0" min="0" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="space-y-3">
-                    <button type="submit" class="btn-primary w-full">
-                        📊 Xuất Hóa Đơn
-                    </button>
-                </div>
-            </form>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="p-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-8">⚙️ Cài Đặt Đơn Giá</h2>
-                
-                <div class="mb-6">
-                    <label class="label-text">Đơn Giá Điện (VNĐ/kWh)</label>
-                    <input type="number" id="electricPrice" class="input-field text-center" placeholder="0" min="0" step="100" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                </div>
+      <div class="modal-content">
+        <div class="p-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8">
+            ⚙️ Cài Đặt Đơn Giá
+          </h2>
 
-                <div class="mb-8">
-                    <label class="label-text">Đơn Giá Nước (VNĐ/m³)</label>
-                    <input type="number" id="waterPrice" class="input-field text-center" placeholder="0" min="0" step="100" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                </div>
+          <div class="mb-6">
+            <label class="label-text">Đơn Giá Điện (VNĐ/kWh)</label>
+            <input
+              type="number"
+              id="electricPrice"
+              class="input-field text-center"
+              placeholder="0"
+              min="0"
+              step="100"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+            />
+          </div>
 
-                <div class="grid-2">
-                    <button onclick="saveSettings()" class="btn-primary">
-                        💾 Lưu
-                    </button>
-                    <button onclick="closeSettings()" class="bg-gray-300 hover:bg-gray-400 active:scale-95 transition-all duration-150 text-gray-800 font-bold py-5 px-8 rounded-xl min-h-[70px] text-xl shadow-sm">
-                        ❌ Hủy
-                    </button>
-                </div>
-            </div>
+          <div class="mb-8">
+            <label class="label-text">Đơn Giá Nước (VNĐ/m³)</label>
+            <input
+              type="number"
+              id="waterPrice"
+              class="input-field text-center"
+              placeholder="0"
+              min="0"
+              step="100"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="grid-2">
+            <button onclick="saveSettings()" class="btn-primary">💾 Lưu</button>
+            <button
+              onclick="closeSettings()"
+              class="bg-gray-300 hover:bg-gray-400 active:scale-95 transition-all duration-150 text-gray-800 font-bold py-5 px-8 rounded-xl min-h-[70px] text-xl shadow-sm"
+            >
+              ❌ Hủy
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Invoice Modal -->
     <div id="invoiceModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="p-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">🧾 HÓA ĐƠN TIỀN PHÒNG</h2>
-                
-                <div id="invoiceContent"></div>
+      <div class="modal-content">
+        <div class="p-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+            🧾 HÓA ĐƠN TIỀN PHÒNG
+          </h2>
 
-                <div class="mt-8 space-y-4">
-                    <button onclick="sendToZalo()" class="btn-secondary w-full">
-                        💬 Gửi qua Zalo
-                    </button>
-                    <button onclick="closeInvoice()" class="bg-gray-300 hover:bg-gray-400 active:scale-95 transition-all duration-150 text-gray-800 font-bold py-5 px-8 rounded-xl w-full min-h-[70px] text-xl shadow-sm">
-                        ❌ Đóng
-                    </button>
-                </div>
-            </div>
+          <div id="invoiceContent"></div>
+
+          <div class="mt-8 space-y-4">
+            <button onclick="sendToZalo()" class="btn-secondary w-full">
+              💬 Gửi qua Zalo
+            </button>
+            <button
+              onclick="closeInvoice()"
+              class="bg-gray-300 hover:bg-gray-400 active:scale-95 transition-all duration-150 text-gray-800 font-bold py-5 px-8 rounded-xl w-full min-h-[70px] text-xl shadow-sm"
+            >
+              ❌ Đóng
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        // Load settings from localStorage
-        function loadSettings() {
-            const electricPrice = localStorage.getItem('electricPrice') || '3500';
-            const waterPrice = localStorage.getItem('waterPrice') || '20000';
-            document.getElementById('electricPrice').value = electricPrice;
-            document.getElementById('waterPrice').value = waterPrice;
+      // Load settings from localStorage
+      function loadSettings() {
+        const electricPrice = localStorage.getItem("electricPrice") || "3500";
+        const waterPrice = localStorage.getItem("waterPrice") || "20000";
+        document.getElementById("electricPrice").value = electricPrice;
+        document.getElementById("waterPrice").value = waterPrice;
+      }
+
+      // Save settings to localStorage
+      function saveSettings() {
+        const electricPrice = document.getElementById("electricPrice").value;
+        const waterPrice = document.getElementById("waterPrice").value;
+
+        if (!electricPrice || !waterPrice) {
+          alert("Vui lòng nhập đầy đủ đơn giá!");
+          return;
         }
 
-        // Save settings to localStorage
-        function saveSettings() {
-            const electricPrice = document.getElementById('electricPrice').value;
-            const waterPrice = document.getElementById('waterPrice').value;
-            
-            if (!electricPrice || !waterPrice) {
-                alert('Vui lòng nhập đầy đủ đơn giá!');
-                return;
-            }
+        localStorage.setItem("electricPrice", electricPrice);
+        localStorage.setItem("waterPrice", waterPrice);
+        closeSettings();
+        alert("✅ Đã lưu cài đặt thành công!");
+      }
 
-            localStorage.setItem('electricPrice', electricPrice);
-            localStorage.setItem('waterPrice', waterPrice);
-            closeSettings();
-            alert('✅ Đã lưu cài đặt thành công!');
-        }
+      // Calculate electric usage
+      function calculateElectric() {
+        const oldValue =
+          parseFloat(document.getElementById("electricOld").value) || 0;
+        const newValue =
+          parseFloat(document.getElementById("electricNew").value) || 0;
+        const used = Math.max(0, newValue - oldValue);
+        document.getElementById("electricUsed").textContent = used.toFixed(1);
+      }
 
-        // Calculate electric usage
-        function calculateElectric() {
-            const oldValue = parseFloat(document.getElementById('electricOld').value) || 0;
-            const newValue = parseFloat(document.getElementById('electricNew').value) || 0;
-            const used = Math.max(0, newValue - oldValue);
-            document.getElementById('electricUsed').textContent = used.toFixed(1);
-        }
+      // Calculate water usage
+      function calculateWater() {
+        const oldValue =
+          parseFloat(document.getElementById("waterOld").value) || 0;
+        const newValue =
+          parseFloat(document.getElementById("waterNew").value) || 0;
+        const used = Math.max(0, newValue - oldValue);
+        document.getElementById("waterUsed").textContent = used.toFixed(1);
+      }
 
-        // Calculate water usage
-        function calculateWater() {
-            const oldValue = parseFloat(document.getElementById('waterOld').value) || 0;
-            const newValue = parseFloat(document.getElementById('waterNew').value) || 0;
-            const used = Math.max(0, newValue - oldValue);
-            document.getElementById('waterUsed').textContent = used.toFixed(1);
-        }
+      // Format currency
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(amount);
+      }
 
-        // Format currency
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(amount);
-        }
+      // Calculate total and show invoice
+      function calculateTotal(event) {
+        event.preventDefault();
 
-        // Calculate total and show invoice
-        function calculateTotal(event) {
-            event.preventDefault();
+        const tenantName = document.getElementById("tenantName").value;
+        const roomPrice =
+          parseFloat(document.getElementById("roomPrice").value) || 0;
+        const electricOld =
+          parseFloat(document.getElementById("electricOld").value) || 0;
+        const electricNew =
+          parseFloat(document.getElementById("electricNew").value) || 0;
+        const waterOld =
+          parseFloat(document.getElementById("waterOld").value) || 0;
+        const waterNew =
+          parseFloat(document.getElementById("waterNew").value) || 0;
+        const otherFees =
+          parseFloat(document.getElementById("otherFees").value) || 0;
 
-            const tenantName = document.getElementById('tenantName').value;
-            const roomPrice = parseFloat(document.getElementById('roomPrice').value) || 0;
-            const electricOld = parseFloat(document.getElementById('electricOld').value) || 0;
-            const electricNew = parseFloat(document.getElementById('electricNew').value) || 0;
-            const waterOld = parseFloat(document.getElementById('waterOld').value) || 0;
-            const waterNew = parseFloat(document.getElementById('waterNew').value) || 0;
-            const otherFees = parseFloat(document.getElementById('otherFees').value) || 0;
+        const electricPrice =
+          parseFloat(localStorage.getItem("electricPrice")) || 3500;
+        const waterPrice =
+          parseFloat(localStorage.getItem("waterPrice")) || 20000;
 
-            const electricPrice = parseFloat(localStorage.getItem('electricPrice')) || 3500;
-            const waterPrice = parseFloat(localStorage.getItem('waterPrice')) || 20000;
+        const electricUsed = Math.max(0, electricNew - electricOld);
+        const waterUsed = Math.max(0, waterNew - waterOld);
 
-            const electricUsed = Math.max(0, electricNew - electricOld);
-            const waterUsed = Math.max(0, waterNew - waterOld);
+        const electricCost = electricUsed * electricPrice;
+        const waterCost = waterUsed * waterPrice;
+        const total = roomPrice + electricCost + waterCost + otherFees;
 
-            const electricCost = electricUsed * electricPrice;
-            const waterCost = waterUsed * waterPrice;
-            const total = roomPrice + electricCost + waterCost + otherFees;
-
-            // Generate invoice HTML
-            const invoiceHTML = `
+        // Generate invoice HTML
+        const invoiceHTML = `
                 <div class="mb-6 text-center bg-gray-50 p-5 rounded-xl">
                     <p class="text-2xl font-bold text-gray-900">Khách: ${tenantName}</p>
-                    <p class="text-lg text-gray-600 mt-2">Ngày: ${new Date().toLocaleDateString('vi-VN')}</p>
+                    <p class="text-lg text-gray-600 mt-2">Ngày: ${new Date().toLocaleDateString(
+                      "vi-VN"
+                    )}</p>
                 </div>
 
                 <table class="invoice-table text-base">
@@ -331,14 +465,24 @@
                         <tr>
                             <td class="font-semibold text-base">Tiền phòng</td>
                             <td class="text-right text-base">1</td>
-                            <td class="text-right text-base">${formatCurrency(roomPrice)}</td>
-                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(roomPrice)}</td>
+                            <td class="text-right text-base">${formatCurrency(
+                              roomPrice
+                            )}</td>
+                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(
+                              roomPrice
+                            )}</td>
                         </tr>
                         <tr>
                             <td class="font-semibold text-base">Điện</td>
-                            <td class="text-right text-base">${electricUsed.toFixed(1)} kWh</td>
-                            <td class="text-right text-base">${formatCurrency(electricPrice)}</td>
-                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(electricCost)}</td>
+                            <td class="text-right text-base">${electricUsed.toFixed(
+                              1
+                            )} kWh</td>
+                            <td class="text-right text-base">${formatCurrency(
+                              electricPrice
+                            )}</td>
+                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(
+                              electricCost
+                            )}</td>
                         </tr>
                         <tr>
                             <td class="text-sm text-gray-500">Chỉ số: ${electricOld} → ${electricNew}</td>
@@ -346,121 +490,170 @@
                         </tr>
                         <tr>
                             <td class="font-semibold text-base">Nước</td>
-                            <td class="text-right text-base">${waterUsed.toFixed(1)} m³</td>
-                            <td class="text-right text-base">${formatCurrency(waterPrice)}</td>
-                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(waterCost)}</td>
+                            <td class="text-right text-base">${waterUsed.toFixed(
+                              1
+                            )} m³</td>
+                            <td class="text-right text-base">${formatCurrency(
+                              waterPrice
+                            )}</td>
+                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(
+                              waterCost
+                            )}</td>
                         </tr>
                         <tr>
                             <td class="text-sm text-gray-500">Chỉ số: ${waterOld} → ${waterNew}</td>
                             <td colspan="3"></td>
                         </tr>
-                        ${otherFees > 0 ? `
+                        ${
+                          otherFees > 0
+                            ? `
                         <tr>
                             <td class="font-semibold text-base">Chi phí khác</td>
                             <td class="text-right text-base">-</td>
                             <td class="text-right text-base">-</td>
-                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(otherFees)}</td>
+                            <td class="text-right font-bold text-primary text-lg">${formatCurrency(
+                              otherFees
+                            )}</td>
                         </tr>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                     </tbody>
                     <tfoot>
                         <tr class="bg-primary text-white">
                             <td colspan="3" class="font-bold text-xl">TỔNG CỘNG</td>
-                            <td class="text-right font-bold text-xl">${formatCurrency(total)}</td>
+                            <td class="text-right font-bold text-xl">${formatCurrency(
+                              total
+                            )}</td>
                         </tr>
                     </tfoot>
                 </table>
             `;
 
-            document.getElementById('invoiceContent').innerHTML = invoiceHTML;
-            
-            // Store invoice data for Zalo
-            window.currentInvoice = {
-                tenantName,
-                date: new Date().toLocaleDateString('vi-VN'),
-                roomPrice,
-                electricOld,
-                electricNew,
-                electricUsed,
-                electricPrice,
-                electricCost,
-                waterOld,
-                waterNew,
-                waterUsed,
-                waterPrice,
-                waterCost,
-                otherFees,
-                total
-            };
+        document.getElementById("invoiceContent").innerHTML = invoiceHTML;
 
-            openInvoice();
+        // Store invoice data for Zalo
+        window.currentInvoice = {
+          tenantName,
+          date: new Date().toLocaleDateString("vi-VN"),
+          roomPrice,
+          electricOld,
+          electricNew,
+          electricUsed,
+          electricPrice,
+          electricCost,
+          waterOld,
+          waterNew,
+          waterUsed,
+          waterPrice,
+          waterCost,
+          otherFees,
+          total,
+        };
+
+        openInvoice();
+      }
+
+      // Send to Zalo
+      async function sendToZalo() {
+        const inv = window.currentInvoice;
+        if (!inv) return;
+
+        let message = `🧾 HÓA ĐƠN TIỀN PHÒNG\n`;
+        message += `━━━━━━━━━━━━━━━━━━━━\n`;
+        message += `👤 Khách: ${inv.tenantName}\n`;
+        message += `📅 Ngày: ${inv.date}\n\n`;
+        message += `📋 CHI TIẾT:\n`;
+        message += `━━━━━━━━━━━━━━━━━━━━\n`;
+        message += `🏠 Tiền phòng: ${formatCurrency(inv.roomPrice)}\n\n`;
+        message += `⚡ Điện: ${inv.electricUsed.toFixed(1)} kWh\n`;
+        message += `   Chỉ số: ${inv.electricOld} → ${inv.electricNew}\n`;
+        message += `   Đơn giá: ${formatCurrency(inv.electricPrice)}/kWh\n`;
+        message += `   Thành tiền: ${formatCurrency(inv.electricCost)}\n\n`;
+        message += `💧 Nước: ${inv.waterUsed.toFixed(1)} m³\n`;
+        message += `   Chỉ số: ${inv.waterOld} → ${inv.waterNew}\n`;
+        message += `   Đơn giá: ${formatCurrency(inv.waterPrice)}/m³\n`;
+        message += `   Thành tiền: ${formatCurrency(inv.waterCost)}\n\n`;
+        if (inv.otherFees > 0) {
+          message += `📌 Chi phí khác: ${formatCurrency(inv.otherFees)}\n\n`;
+        }
+        message += `━━━━━━━━━━━━━━━━━━━━\n`;
+        message += `💰 TỔNG CỘNG: ${formatCurrency(inv.total)}\n`;
+        message += `━━━━━━━━━━━━━━━━━━━━`;
+
+        // Try Web Share API first (works on mobile)
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "Hóa đơn tiền phòng",
+              text: message,
+            });
+            return;
+          } catch (err) {
+            // User cancelled or error, fallback to clipboard
+          }
         }
 
-        // Send to Zalo
-        function sendToZalo() {
-            const inv = window.currentInvoice;
-            if (!inv) return;
-
-            let message = `🧾 HÓA ĐƠN TIỀN PHÒNG\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `👤 Khách: ${inv.tenantName}\n`;
-            message += `📅 Ngày: ${inv.date}\n\n`;
-            message += `📋 CHI TIẾT:\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `🏠 Tiền phòng: ${formatCurrency(inv.roomPrice)}\n\n`;
-            message += `⚡ Điện: ${inv.electricUsed.toFixed(1)} kWh\n`;
-            message += `   Chỉ số: ${inv.electricOld} → ${inv.electricNew}\n`;
-            message += `   Đơn giá: ${formatCurrency(inv.electricPrice)}/kWh\n`;
-            message += `   Thành tiền: ${formatCurrency(inv.electricCost)}\n\n`;
-            message += `💧 Nước: ${inv.waterUsed.toFixed(1)} m³\n`;
-            message += `   Chỉ số: ${inv.waterOld} → ${inv.waterNew}\n`;
-            message += `   Đơn giá: ${formatCurrency(inv.waterPrice)}/m³\n`;
-            message += `   Thành tiền: ${formatCurrency(inv.waterCost)}\n\n`;
-            if (inv.otherFees > 0) {
-                message += `📌 Chi phí khác: ${formatCurrency(inv.otherFees)}\n\n`;
-            }
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `💰 TỔNG CỘNG: ${formatCurrency(inv.total)}\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━`;
-
-            // Encode message for URL
-            const encodedMessage = encodeURIComponent(message);
-            
-            // Try to open Zalo app on mobile, fallback to web
-            const zaloUrl = `https://zalo.me/pc?text=${encodedMessage}`;
-            
-            // Open in new window/tab
-            window.open(zaloUrl, '_blank');
+        // Fallback: Copy to clipboard
+        try {
+          await navigator.clipboard.writeText(message);
+          alert(
+            "✅ Đã copy hóa đơn vào clipboard!\n\nMở Zalo và paste (dán) vào để gửi."
+          );
+        } catch (err) {
+          // Fallback for older browsers
+          const textarea = document.createElement("textarea");
+          textarea.value = message;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand("copy");
+            alert(
+              "✅ Đã copy hóa đơn vào clipboard!\n\nMở Zalo và paste (dán) vào để gửi."
+            );
+          } catch (e) {
+            alert(
+              "❌ Không thể copy tự động. Vui lòng copy nội dung hóa đơn thủ công."
+            );
+          }
+          document.body.removeChild(textarea);
         }
+      }
 
-        // Modal functions
-        function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
-        }
+      // Modal functions
+      function openSettings() {
+        document.getElementById("settingsModal").classList.remove("hidden");
+      }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
+      function closeSettings() {
+        document.getElementById("settingsModal").classList.add("hidden");
+      }
 
-        function openInvoice() {
-            document.getElementById('invoiceModal').classList.remove('hidden');
-        }
+      function openInvoice() {
+        document.getElementById("invoiceModal").classList.remove("hidden");
+      }
 
-        function closeInvoice() {
-            document.getElementById('invoiceModal').classList.add('hidden');
-        }
+      function closeInvoice() {
+        document.getElementById("invoiceModal").classList.add("hidden");
+      }
 
-        // Close modals when clicking outside
-        document.getElementById('settingsModal').addEventListener('click', function(e) {
-            if (e.target === this) closeSettings();
+      // Close modals when clicking outside
+      document
+        .getElementById("settingsModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeSettings();
         });
 
-        document.getElementById('invoiceModal').addEventListener('click', function(e) {
-            if (e.target === this) closeInvoice();
+      document
+        .getElementById("invoiceModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeInvoice();
         });
 
-        // Initialize
-        loadSettings();
+      // Initialize
+      loadSettings();
     </script>
-</body>
+  </body>
 </html>

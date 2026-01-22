@@ -1,0 +1,173 @@
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+}
+
+.btn-primary {
+  @apply bg-primary hover:bg-primary-dark active:scale-95 transition-all duration-150 text-white font-black py-7 px-10 rounded-2xl shadow-lg min-h-[90px] text-3xl;
+}
+
+.btn-secondary {
+  @apply bg-green-500 hover:bg-green-600 active:scale-95 transition-all duration-150 text-white font-black py-7 px-10 rounded-2xl shadow-lg min-h-[90px] text-3xl;
+}
+
+.input-field {
+  @apply w-full px-8 py-8 text-3xl border-4 border-gray-400 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary focus:border-primary bg-white text-gray-900 min-h-[100px] transition-all font-bold;
+}
+
+.input-field:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+select.input-field {
+  @apply py-7 min-h-[100px];
+}
+
+textarea.input-field {
+  @apply py-6 min-h-[140px];
+}
+
+.label-text {
+  @apply block text-2xl font-black text-gray-900 mb-4;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-lg p-8 mb-6 border border-gray-100;
+}
+
+.invoice-table {
+  @apply w-full border-collapse;
+}
+
+.invoice-table th,
+.invoice-table td {
+  @apply px-4 py-4 text-left border-b border-gray-200;
+}
+
+.invoice-table th {
+  @apply font-bold text-gray-800 bg-gray-50;
+}
+
+.invoice-table td {
+  @apply text-gray-900;
+}
+
+.modal {
+  @apply fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-2xl shadow-2xl max-w-full w-full max-h-[90vh] overflow-y-auto;
+}
+
+.grid-2 {
+  @apply grid grid-cols-2 gap-3;
+}
+
+/* Excel-style table */
+.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: white;
+}
+
+.excel-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #2563eb;
+  color: white;
+}
+
+.excel-table th {
+  padding: 12px 8px;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.excel-table td {
+  padding: 10px 8px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.excel-table tbody tr:hover {
+  background-color: #eff6ff;
+}
+
+.excel-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.excel-table tbody tr:nth-child(even):hover {
+  background-color: #eff6ff;
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 60vh;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .grid-2 {
+    @apply gap-3;
+  }
+
+  .card {
+    @apply p-4;
+  }
+
+  .invoice-table th,
+  .invoice-table td {
+    @apply px-2 py-2 text-sm;
+  }
+
+  .modal-content {
+    @apply max-h-[85vh];
+    max-width: 95vw;
+  }
+
+  .excel-table {
+    font-size: 11px;
+  }
+
+  .excel-table th {
+    padding: 8px 4px;
+    font-size: 10px;
+  }
+
+  .excel-table td {
+    padding: 8px 4px;
+  }
+
+  .table-container {
+    max-height: 55vh;
+  }
+}
+
+/* Improve number input on mobile */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
